@@ -43,86 +43,35 @@ ne = natsort(ne);
 filePattern_f=natsort(filePattern_f);
 
 %% Running analysis through list
-for i=1:length(ne)
-Loc=char(filePattern_f(i));
-nam=char(ne(i));
+for i=2:6   %:length(ne)
+% Loc=char(filePattern_f(i));
 disp(sprintf('Running analysis for image number %d',i)); 
-Analysis.(char(ne{i}))=Run(Loc); %,Analysis.(char(ne{i})) );
+nam=char(ne(i))
+Analysis.(char(ne{i})).Location=char(filePattern_f(i));
+% Analysis.(char(ne{i}))=Run(Analysis_Exp8a.(char(ne{i})));
+Analysis_Exp8a.(char(ne{i}))=RunwTdTom(Analysis_Exp8a.(char(ne{i})),Analysis_tdTom.(char(ne{i})).tdTomMasks); %,Analysis.(char(ne{i})) );
 end
 
+%%
 
-
-
-%% Organizing To Matrices
-Analysis.Names=(ne);
-I=['I1'; 'I2' ;'I3' ;'I4' ;'I5'; 'I6'];
-
-count=1;
-for i=1:length(ne)
-
-            data(i,:)=[Analysis.Names(i) Analysis.(char(ne{i})).RatioMxs];
+for i=1:6
+    
+Analysis_Exp8a.tdTom.Names(i,1)=(ne(i));
+Analysis_Exp8a.tdTom.Overview(i,1)=Analysis_tdTom.(char(ne{i})).RatioMxs;
+Analysis_Exp8a.tdTom.Overview(i,2)=Analysis_Exp8a.(char(ne{i})).RatioActiveTdPositive;
+Analysis_Exp8a.tdTom.Overview(i,3)=Analysis_Exp8a.(char(ne{i})).CorrCoeffTdPositive;
 
 end
+%% Organizing Data to arrays
 
-Analysis.DataOverview=data;
-
-%% Saving
-
-save('I:\Nurin\JoshData\Analysis\MatlabFiles\042617.mat','Analysis_042617', '-v7.3')
-
-%% Removing a field from the structure
 for i=1:length(ne)
     
-    if isfield(Analysis.(char(ne{i}))(:),'I3')==1
-        for j=1:3
-            Analysis.(char(ne{i})).(I(j,:))=rmfield(Analysis.(char(ne{i})).(I(j,:)),'images');
-        end
-        
-    elseif isfield(Analysis.(char(ne{i}))(:),'I2')==1
-                  for j=1:2
-           Analysis.(char(ne{i})).(I(j,:))=rmfield(Analysis.(char(ne{i})).(I(j,:)),'images');
-                  end
-%          
-    elseif isfield(Analysis.(char(ne{i}))(:),'I1')==1
-        j=1;
-            Analysis.(char(ne{i})).(I(j,:))=rmfield(Analysis.(char(ne{i})).(I(j,:)),'images');
-%        
-    end
+Analysis.Names(i,1)=(ne(i));
+Analysis.Overview(i,1)=Analysis.(char(ne{i})).RatioActive;
+Analysis.Overview(i,2)=Analysis.(char(ne{i})).HiCorrCoeff;
+Analysis.Overview(i,3)=max(Analysis.(char(ne{i})).AvgCorr);
+Analysis.Overview(i,4)=Analysis.(char(ne{i})).DutyCycle;
 
-    
 end
 
 
-
-
-%%
-% 
-% close all
-% 
-% WT_2G_I1.Location='L:\Images\MH\04-19-2017\WT_2G_I1.czi';
-% WT_2G_I1=Run(WT_2G_I1);
-% 
-% WT_11G_I1.Location='L:\Images\MH\04-19-2017\WT_11G_I1.czi';
-% WT_11G_I1=Run(WT_11G_I1);
-% 
-% WT_11G_3MH_I1.Location='L:\Images\MH\04-19-2017\WT_11G_3MH_I1.czi';
-% WT_11G_3MH_I1=Run(WT_11G_3MH_I1);
-% 
-% WT_2G(4,:)=[WT_2G_I1.RatioActive WT_2G_I1.HiCorrCoeff WT_2G_I1.DutyCycle];
-% WT_11G(4,:)=[WT_11G_I1.RatioActive WT_11G_I1.HiCorrCoeff WT_11G_I1.DutyCycle];
-% WT_11G_3MH(4,:)=[WT_11G_3MH_I1.RatioActi ve WT_11G_3MH_I1.HiCorrCoeff WT_11G_3MH_I1.DutyCycle];
-%   
-% WT_data=[WT_2G(:,1) WT_11G(:,1) WT_11G_3MH(:,1) ...
-%                   WT_2G(:,2) WT_11G(:,2) WT_11G_3MH(:,2) ...
-% WT_2G(:,3) WT_11G(:,3) WT_11G_3MH(:,3)]
-
-%%
-
-
-%%
-% cd(home)
-% save('Exp6b_B6.mat', 'B6_*')
-% save('Exp6b_WT.mat', 'WT_*')
-% save('Exp6b_WT.mat', 'WT_*')
-
-    
